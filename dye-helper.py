@@ -95,7 +95,7 @@ def calculate_acid_donor(dye_sum):
     return max_value
 
 
-def values():
+def days():
     k = Controller()
     k.release('q')
     k.release(Key.alt)
@@ -119,6 +119,46 @@ def values():
             return
         elif read_numbers == '3,00':
             k.type(str(8))
+            pyperclip.copy('NONE')
+            k.tap(Key.enter)
+            return
+        else:
+            k.tap(Key.esc)
+            return
+
+
+def quantity():
+    k = Controller()
+    k.release('q')
+    k.release(Key.alt)
+    window_title = activeWindowTitle()
+    while 'Detalhe do' in window_title:
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        k.tap(Key.tab)
+        with k.pressed(Key.shift):
+            k.tap(Key.end)
+        k.tap(Key.menu)
+        sleep(0.1)
+        k.tap('c')
+        sleep(0.2)
+        read_numbers = pyperclip.paste()
+        if read_numbers in {'1000', '500'}:
+            k.type(str(750))
             pyperclip.copy('NONE')
             k.tap(Key.enter)
             return
@@ -302,7 +342,8 @@ def calculate_ac():
 
 
 with keyboard.GlobalHotKeys({
-     '<alt>+q': values,
+     '<alt>+q': days,
+     '<alt>+w': quantity,
      '<f5>': calculate_co,
      '<f6>': calculate_cv,
      '<f9>': calculate_ac}) as listener:
