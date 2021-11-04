@@ -112,16 +112,16 @@ def days():
         k.tap('c')
         sleep(0.2)
         read_numbers = pyperclip.paste()
-        if read_numbers in {'6,00', '7,00', '8,00'}:
-            k.type(str(3))
+        if read_numbers in {'3,00', '6,00', '7,00'}:
+            k.type(str(8))
             pyperclip.copy('NONE')
             k.tap(Key.enter)
-            return
+            return'''
         elif read_numbers == '3,00':
             k.type(str(8))
             pyperclip.copy('NONE')
             k.tap(Key.enter)
-            return
+            return'''
         else:
             k.tap(Key.esc)
             return
@@ -129,7 +129,7 @@ def days():
 
 def quantity():
     k = Controller()
-    k.release('q')
+    k.release('w')
     k.release(Key.alt)
     window_title = activeWindowTitle()
     while 'Detalhe do' in window_title:
