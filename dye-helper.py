@@ -9,7 +9,7 @@ import os
 
 os.system('cls')
 
-test_mode = True
+test_mode = False
 
 # ----------------- Do not edit below this line ----------------- #
 
