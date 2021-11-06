@@ -173,23 +173,26 @@ def copy_dye_values():
         pass
     else:
         dye_values = []
+        pyperclip.copy('dosorama')
         while True:
-            pyperclip.copy('dosorama')
-            read_value = pyperclip.paste()
             while True:
                 k.tap(Key.menu)
                 k.tap('c')
                 sleep(0.2)
                 read_value = pyperclip.paste()
+                # print('Test value 0: ' + read_value)
                 if 'dosorama' not in read_value:
+                    # print('Test value 1: ' + read_value)
                     break
-            if ',' not in read_value:
+            if 'NONE' in read_value:
+                # print('Test value 2: ' + read_value)
                 break
             else:
                 values_str = str(read_value.split('\\')[0]).replace(",", ".")
                 dye_values.append(float(values_str))
-                pyperclip.copy('none')
+                pyperclip.copy('NONE')
                 if test_mode is False:
+                    # print('Test value 3: ' + read_value)
                     k.tap(Key.enter)
                     k.tap(Key.enter)
                 else:
@@ -220,7 +223,7 @@ def copy_dye_values():
         return dye_sum
 
 
-def navigate_dosorama(fabric):
+def navigate_dosorama(fabric, half):
     k = Controller()
     reactive = False
     if not window_title_exists():
@@ -299,7 +302,10 @@ def navigate_dosorama(fabric):
         elif fabric in {'cotton', 'viscose'}:
             k.type(str(salt_total))
             k.tap(Key.enter)
-            k.type(str(soda_ash_total))
+            if half:
+                k.type(str(int(soda_ash_total) / 2))
+            else:
+                k.type(str(soda_ash_total))
             k.tap(Key.enter)
         if reactive is True:
             k.tap(Key.esc)
@@ -307,7 +313,7 @@ def navigate_dosorama(fabric):
         return
 
 
-def calculate_dyes(fabric, key):
+def calculate_dyes(fabric, key, half):
     k = Controller()
     k.release(key)
     k.release(Key.ctrl)
@@ -319,7 +325,7 @@ def calculate_dyes(fabric, key):
     sleep(0.5)
     previous = pyperclip.paste()
     sleep(0.25)
-    navigate_dosorama(fabric)
+    navigate_dosorama(fabric, half)
     if test_mode is True:
         print()
     pyperclip.copy(previous)
@@ -327,17 +333,27 @@ def calculate_dyes(fabric, key):
 
 
 def calculate_co():
-    calculate_dyes('cotton', Key.f5)
+    calculate_dyes('cotton', Key.f5, False)
     return
 
 
 def calculate_cv():
-    calculate_dyes('viscose', Key.f6)
+    calculate_dyes('viscose', Key.f6, False)
+    return
+
+
+def calculate_half_co():
+    calculate_dyes('cotton', Key.f7, True)
+    return
+
+
+def calculate_half_cv():
+    calculate_dyes('viscose', Key.f8, True)
     return
 
 
 def calculate_ac():
-    calculate_dyes('acid', Key.f9)
+    calculate_dyes('acid', Key.f9, False)
     return
 
 
