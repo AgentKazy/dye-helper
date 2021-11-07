@@ -176,7 +176,6 @@ def tolerance():
             k.tap(Key.tab)
             k.tap(Key.tab)
             k.tap(Key.tab)
-        with k.pressed(Key.shift):
             k.tap(Key.end)
         k.tap(Key.menu)
         sleep(0.1)
@@ -389,5 +388,7 @@ with keyboard.GlobalHotKeys({
      '<alt>+e': tolerance,
      '<f5>': calculate_co,
      '<f6>': calculate_cv,
+     '<f7>': calculate_half_co,
+     '<f8>': calculate_half_cv,
      '<f9>': calculate_ac}) as listener:
     listener.join()
