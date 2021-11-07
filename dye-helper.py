@@ -112,18 +112,13 @@ def days():
         k.tap('c')
         sleep(0.2)
         read_numbers = pyperclip.paste()
-        if read_numbers in {'3,00', '6,00', '7,00'}:
-            k.type(str(8))
-            pyperclip.copy('NONE')
-            k.tap(Key.enter)
-            return'''
-        elif read_numbers == '3,00':
-            k.type(str(8))
-            pyperclip.copy('NONE')
-            k.tap(Key.enter)
-            return'''
-        else:
+        if read_numbers not in {'3,00', '6,00', '7,00'}:
             k.tap(Key.esc)
+            return
+        else:
+            k.type(str(8))
+            pyperclip.copy('NONE')
+            k.tap(Key.enter)
             return
 
 
@@ -157,13 +152,44 @@ def quantity():
         k.tap('c')
         sleep(0.2)
         read_numbers = pyperclip.paste()
-        if read_numbers in {'1000', '500'}:
+        if read_numbers not in {'1000', '500'}:
+            k.tap(Key.esc)
+            return
+        else:
             k.type(str(750))
             pyperclip.copy('NONE')
             k.tap(Key.enter)
             return
-        else:
+
+
+def tolerance():
+    k = Controller()
+    k.release('e')
+    k.release(Key.alt)
+    window_title = activeWindowTitle()
+    while 'Detalhe do' in window_title:
+        with k.pressed(Key.shift):
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+            k.tap(Key.tab)
+        with k.pressed(Key.shift):
+            k.tap(Key.end)
+        k.tap(Key.menu)
+        sleep(0.1)
+        k.tap('c')
+        sleep(0.2)
+        read_numbers = pyperclip.paste()
+        if read_numbers in {'5'}:
             k.tap(Key.esc)
+            return
+        else:
+            k.type(str(5))
+            pyperclip.copy('NONE')
+            k.tap(Key.enter)
             return
 
 
@@ -360,6 +386,7 @@ def calculate_ac():
 with keyboard.GlobalHotKeys({
      '<alt>+q': days,
      '<alt>+w': quantity,
+     '<alt>+e': tolerance,
      '<f5>': calculate_co,
      '<f6>': calculate_cv,
      '<f9>': calculate_ac}) as listener:
