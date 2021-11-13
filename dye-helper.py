@@ -1,10 +1,10 @@
-from time import sleep
+from ctypes import windll, create_unicode_buffer
+import os
 # https://pynput.readthedocs.io/en/latest/keyboard.html#controlling-the-keyboard
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
-from ctypes import windll, create_unicode_buffer
 import pyperclip
-import os
+from time import sleep
 
 
 os.system('cls')
