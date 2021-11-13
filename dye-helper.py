@@ -9,7 +9,7 @@ import os
 
 os.system('cls')
 
-test_mode = False
+test_mode = True
 
 # ----------------- Do not edit below this line ----------------- #
 
@@ -101,24 +101,19 @@ def copy_dye_values():
         pass
     else:
         dye_values = []
-        pyperclip.copy('TECNORAMA')
         while True:
-            while True:
+            read_value = 'break_loop'
+            while read_value == 'break_loop':
                 with k.pressed(Key.ctrl):
                     k.tap('c')
                 sleep(0.2)
                 read_value = pyperclip.paste()
-                # print('Test value 0: ' + read_value)
-                if 'TECNORAMA' not in read_value:
-                    # print('Test value 1: ' + read_value)
-                    break
-            if 'NONE' in read_value:
-                # print('Test value 2: ' + read_value)
+            if ',' not in read_value:
                 break
             else:
-                dye_read = str(read_value.replace(' ', '')).replace(",", ".")
+                dye_read = str(read_value.replace(' ', '')).replace(',', '.')
                 dye_values.append(float(dye_read))
-                pyperclip.copy('NONE')
+                # pyperclip.copy('NONE')
                 if test_mode is True:
                     print('Dye value: ' + dye_read, end='\r')
                 k.tap(Key.down)
@@ -130,10 +125,12 @@ def copy_dye_values():
             k.tap(Key.end)
         k.tap(Key.home)
         k.tap(Key.up)
-        with k.pressed(Key.ctrl):
-            k.tap('c')
-        sleep(0.2)
-        indifix = pyperclip.paste()
+        indifix = 'break_loop'
+        while indifix == 'break_loop':
+            with k.pressed(Key.ctrl):
+                k.tap('c')
+            sleep(0.2)
+            indifix = pyperclip.paste()
         if '2026' not in indifix:
             pass
         else:
@@ -171,15 +168,12 @@ def navigate_dosorama(fabric, half):
         if fabric in {'cotton', 'viscose'}:
             k.tap(Key.down)
         if fabric in {'cotton', 'viscose'}:
-            pyperclip.copy('dosorama')
-            biotouch = pyperclip.paste()
-            while True:
+            biotouch = 'break_loop'
+            while biotouch == 'break_loop':
                 with k.pressed(Key.ctrl):
                     k.tap('c')
                 sleep(0.2)
                 biotouch = pyperclip.paste()
-                if 'dosorama' not in biotouch:
-                    break
             if biotouch not in {'2211', '2212'}:
                 k.tap(Key.esc)
                 k.tap(Key.right)
