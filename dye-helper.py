@@ -95,144 +95,43 @@ def calculate_acid_donor(dye_sum):
     return max_value
 
 
-def days():
-    k = Controller()
-    k.release('q')
-    k.release(Key.alt)
-    window_title = activeWindowTitle()
-    while 'Detalhe do' in window_title:
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        with k.pressed(Key.shift):
-            k.tap(Key.end)
-        k.tap(Key.menu)
-        sleep(0.1)
-        k.tap('c')
-        sleep(0.2)
-        read_numbers = pyperclip.paste()
-        if read_numbers not in {'3,00', '6,00', '7,00'}:
-            k.tap(Key.esc)
-            return
-        else:
-            k.type(str(8))
-            pyperclip.copy('NONE')
-            k.tap(Key.enter)
-            return
-
-
-def quantity():
-    k = Controller()
-    k.release('w')
-    k.release(Key.alt)
-    window_title = activeWindowTitle()
-    while 'Detalhe do' in window_title:
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        k.tap(Key.tab)
-        with k.pressed(Key.shift):
-            k.tap(Key.end)
-        k.tap(Key.menu)
-        sleep(0.1)
-        k.tap('c')
-        sleep(0.2)
-        read_numbers = pyperclip.paste()
-        if read_numbers not in {'1000', '500'}:
-            k.tap(Key.esc)
-            return
-        else:
-            k.type(str(750))
-            pyperclip.copy('NONE')
-            k.tap(Key.enter)
-            return
-
-
-def tolerance():
-    k = Controller()
-    k.release('e')
-    k.release(Key.alt)
-    window_title = activeWindowTitle()
-    while 'Detalhe do' in window_title:
-        with k.pressed(Key.shift):
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.tab)
-            k.tap(Key.end)
-        k.tap(Key.menu)
-        sleep(0.1)
-        k.tap('c')
-        sleep(0.2)
-        read_numbers = pyperclip.paste()
-        if read_numbers in {'5'}:
-            k.tap(Key.esc)
-            return
-        else:
-            k.type(str(5))
-            pyperclip.copy('NONE')
-            k.tap(Key.enter)
-            return
-
-
 def copy_dye_values():
     k = Controller()
     if not window_title_exists():
         pass
     else:
         dye_values = []
-        pyperclip.copy('dosorama')
+        pyperclip.copy('TECNORAMA')
         while True:
             while True:
-                k.tap(Key.menu)
-                k.tap('c')
+                with k.pressed(Key.ctrl):
+                    k.tap('c')
                 sleep(0.2)
                 read_value = pyperclip.paste()
                 # print('Test value 0: ' + read_value)
-                if 'dosorama' not in read_value:
+                if 'TECNORAMA' not in read_value:
                     # print('Test value 1: ' + read_value)
                     break
             if 'NONE' in read_value:
                 # print('Test value 2: ' + read_value)
                 break
             else:
-                values_str = str(read_value.split('\\')[0]).replace(",", ".")
-                dye_values.append(float(values_str))
+                dye_read = str(read_value.replace(' ', '')).replace(",", ".")
+                dye_values.append(float(dye_read))
                 pyperclip.copy('NONE')
-                if test_mode is False:
-                    # print('Test value 3: ' + read_value)
-                    k.tap(Key.enter)
-                    k.tap(Key.enter)
-                else:
-                    print('Dye value: ' + values_str, end='\r')
-                    k.tap(Key.down)
+                if test_mode is True:
+                    print('Dye value: ' + dye_read, end='\r')
+                k.tap(Key.down)
         # Sum all quantities from list: https://stackoverflow.com/a/11344839
         dye_sum = float(sum(i for i in dye_values))
         # Check for Indifix PA
         k.tap(Key.esc)
+        with k.pressed(Key.ctrl):
+            k.tap(Key.end)
         k.tap(Key.home)
         k.tap(Key.up)
-        if test_mode is False:
-            k.tap(Key.enter)
-        k.tap(Key.menu)
-        k.tap('c')
+        with k.pressed(Key.ctrl):
+            k.tap('c')
         sleep(0.2)
         indifix = pyperclip.paste()
         if '2026' not in indifix:
@@ -271,14 +170,12 @@ def navigate_dosorama(fabric, half):
         # Check for Bio-touch
         if fabric in {'cotton', 'viscose'}:
             k.tap(Key.down)
-        if test_mode is False:
-            k.tap(Key.enter)
         if fabric in {'cotton', 'viscose'}:
             pyperclip.copy('dosorama')
             biotouch = pyperclip.paste()
             while True:
-                k.tap(Key.menu)
-                k.tap('c')
+                with k.pressed(Key.ctrl):
+                    k.tap('c')
                 sleep(0.2)
                 biotouch = pyperclip.paste()
                 if 'dosorama' not in biotouch:
@@ -288,8 +185,6 @@ def navigate_dosorama(fabric, half):
                 k.tap(Key.right)
                 k.tap(Key.right)
                 k.tap(Key.right)
-                if test_mode is False:
-                    k.tap(Key.enter)
             else:
                 reactive = True
                 if fabric == 'cotton':
@@ -347,7 +242,7 @@ def calculate_dyes(fabric, key, half):
     if test_mode is True:
         key_split = str(key).split('.')[1]
         print(key_split.upper() + ' --> Calculating ' + fabric + ' values')
-    sleep(0.5)
+    sleep(0.25)
     previous = pyperclip.paste()
     sleep(0.25)
     navigate_dosorama(fabric, half)
@@ -383,9 +278,6 @@ def calculate_ac():
 
 
 with keyboard.GlobalHotKeys({
-     '<alt>+q': days,
-     '<alt>+w': quantity,
-     '<alt>+e': tolerance,
      '<f5>': calculate_co,
      '<f6>': calculate_cv,
      '<f7>': calculate_half_co,
