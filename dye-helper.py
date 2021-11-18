@@ -235,8 +235,7 @@ def navigate_dosorama(fabric, half):
                 sleep(0.2)
             k.tap(Key.enter)
         if reactive is True:
-            k.tap(Key.esc)
-            k.tap(Key.down)
+            k.tap(Key.enter)
         return
 
 
