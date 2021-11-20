@@ -220,20 +220,21 @@ def navigate_dosorama(fabric, half):
                 k.type('a')
             k.type(str(salt_total.replace(' ', '')))
             k.tap(Key.enter)
-            sleep(0.1)
+            sleep(0.05)
             k.type('0')
             with k.pressed(Key.ctrl):
                 k.type('a')
-            sleep(0.2)
+            '''sleep(0.2)
             with k.pressed(Key.ctrl):
-                k.type('a')
+                k.type('a')'''
             if half:
                 k.type(str(int(soda_ash_total.replace(' ', '')) / 2))
-                sleep(0.2)
+                # sleep(0.2)
             else:
                 k.type(str(soda_ash_total.replace(' ', '')))
-                sleep(0.2)
+                # sleep(0.2)
             k.tap(Key.enter)
+            sleep(0.05)
         if reactive is True:
             k.tap(Key.enter)
         return
