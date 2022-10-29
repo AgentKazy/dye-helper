@@ -1,15 +1,13 @@
 from ctypes import windll, create_unicode_buffer
 import os
-# https://pynput.readthedocs.io/en/latest/keyboard.html#controlling-the-keyboard
-from pynput import keyboard
-from pynput.keyboard import Key, Controller
-import pyperclip
+import keyboard as kb
+import pyperclip as ppc
 from time import sleep
 
 
 os.system('cls')
 
-test_mode = False
+test_mode = True
 
 # ----------------- Do not edit below this line ----------------- #
 
@@ -72,7 +70,7 @@ def calculate_salt_soda(dye_sum, fabric):
               + str(max_values[0]))
         print('Total soda ash calculated: '
               + str(max_values[1]))
-    return max_values[0], max_values[1]
+    return max_values[0].replace(' ', ''), max_values[1].replace(' ', '')
 
 
 def calculate_acid_donor(dye_sum):
@@ -88,15 +86,14 @@ def calculate_acid_donor(dye_sum):
             if test_mode is True:
                 print('Total acid donor calculated: '
                       + str(indigive[quantity]))
-            return indigive[quantity]
+            return indigive[quantity].replace(' ', '')
     # If value is over 'indigive'
     if test_mode is True:
         print('Total acid donor calculated: ' + str(max_value))
-    return max_value
+    return max_value.replace(' ', '')
 
 
 def copy_dye_values():
-    k = Controller()
     if not window_title_exists():
         pass
     else:
@@ -104,46 +101,51 @@ def copy_dye_values():
         while True:
             read_value = 'break_loop'
             while read_value == 'break_loop':
-                with k.pressed(Key.ctrl):
-                    k.tap('c')
+                print("Before copying: " + read_value)
+                kb.send('ctrl+c')
                 sleep(0.05)
-                read_value = pyperclip.paste()
+                read_value = str(
+                    ppc.paste().replace(' ', '')).replace(',', '.')
+                print("After copying: " + read_value)
             # sleep(0.2)
-            if 'NONE' in read_value:
+            if '.' not in read_value:
                 break
-            dye_read = str(read_value.replace(' ', '')).replace(',', '.')
-            dye_values.append(float(dye_read))
-            pyperclip.copy('NONE')
+            print('Read value :' + read_value)
+            dye_values.append(float(read_value))
+            ppc.copy('NONE')
             if test_mode is True:
-                print('Dye value: ' + dye_read, end='\r')
-            k.tap(Key.down)
+                print('Read value: ' + read_value, end='\r')
+                print('Dye value: ' + str(
+                    float(sum(i for i in dye_values))), end='\r')
+            kb.send('down')
         # Sum all quantities from list: https://stackoverflow.com/a/11344839
         dye_sum = float(sum(i for i in dye_values))
         # Check for Indifix PA
-        k.tap(Key.home)
-        k.tap(Key.up)
+        kb.send('home, up')
         indifix = 'break_loop'
         while indifix == 'break_loop':
-            with k.pressed(Key.ctrl):
-                k.tap('c')
+            kb.send('ctrl+c')
             sleep(0.05)
-            indifix = pyperclip.paste()
+            indifix = ppc.paste()
         # sleep(0.2)
         if '2026' not in indifix:
             pass
         else:
             indifix_value = float(dye_values[-1])
+            print(dye_values[-1])
             if test_mode is True:
                 print('Formula contains Indifix PA: '
                       + str((dye_values[-1])) + ' g/L')
+                print('Dye sum before removing Indifix: ' + str(dye_sum))
             dye_sum = dye_sum - indifix_value
         if test_mode is True:
-            print('Total dye quantity: ' + str(round(dye_sum, 3)))
+            print('Indifix value: ' + str(indifix_value))
+            print('Total dye quantity (after Indifix): ' + (
+                str(round(dye_sum, 3))))
         return dye_sum
 
 
 def navigate_dosorama(fabric, half):
-    k = Controller()
     reactive = False
     if not window_title_exists():
         if test_mode is True:
@@ -151,46 +153,42 @@ def navigate_dosorama(fabric, half):
         pass
     else:
         # Reset position
-        k.tap(Key.esc)
-        with k.pressed(Key.ctrl):
-            k.tap(Key.home)
+        kb.send('esc, ctrl+home')
         # Move to first dye
         if fabric == 'acid':
-            k.tap(Key.right)
-            k.tap(Key.right)
-            k.tap(Key.right)
-        k.tap(Key.down)
-        k.tap(Key.down)
-        k.tap(Key.down)
+            kb.send('right, right, right')
+        kb.send('down, down, down')
         # Check for Bio-touch
         if fabric in {'cotton', 'viscose'}:
-            k.tap(Key.down)
+            kb.send('down')
         if fabric in {'cotton', 'viscose'}:
             biotouch = 'break_loop'
-            pyperclip.copy('break_loop')
+            ppc.copy('break_loop')
             while biotouch == 'break_loop':
-                with k.pressed(Key.ctrl):
-                    k.tap('c')
-                # print('before = ' + str(biotouch))
-                biotouch = pyperclip.paste()
-                sleep(0.005)
-                # print('after = ' + str(biotouch))
+                print('before = ' + str(biotouch))
+                kb.send('ctrl+c')
+                sleep(0.05)
+                biotouch = ppc.paste()
+                print('after = ' + str(biotouch))
             # sleep(0.2)
-            if biotouch not in {'2211', '2212'}:
-                k.tap(Key.esc)
-                k.tap(Key.right)
-                k.tap(Key.right)
-                k.tap(Key.right)
+            print('Biotouch value is: ' + str(biotouch))
+            if not biotouch.startswith('221'):
+                if test_mode is True:
+                    print('No bio-touch.')
+                kb.send('esc, right, right, right')
             else:
                 reactive = True
                 if fabric == 'cotton':
-                    k.type('2211')  # Bio-touch CN
+                    kb.write('2211')  # Bio-touch CN
                 elif fabric == 'viscose':
-                    k.type('2212')  # Bio-touch NLG
-                pyperclip.copy('break_loop')
-                k.tap(Key.enter)
+                    kb.write('2212')  # Bio-touch NLG
+                ppc.copy('break_loop')
+                kb.send('enter')
+                if test_mode is True:
+                    kb.send('up, right, right, right, down')
                 sleep(0.05)
-                k.tap(Key.enter)
+                kb.send('enter')
+                sleep(0.05)
         # Read and sum dye quantities
         total_dye_quantity = copy_dye_values()
         if fabric in {'cotton', 'viscose'}:
@@ -198,96 +196,54 @@ def navigate_dosorama(fabric, half):
                 total_dye_quantity, fabric)
         elif fabric == 'acid':
             indigive_total = calculate_acid_donor(total_dye_quantity)
-        # Reset position
-        with k.pressed(Key.ctrl):
-            k.tap(Key.home)
-        # Move to Salt/Acid donor values
-        k.tap(Key.right)
-        k.tap(Key.right)
-        k.tap(Key.right)
-        k.tap(Key.down)
-        k.tap(Key.down)
+        # Reset position & move to Salt/Acid donor values
+        kb.send('ctrl+home, right, right, right, down, down')
         # Enter salt and soda ash/acid donor totals
         if fabric == 'acid':
-            k.type('0')
-            with k.pressed(Key.ctrl):
-                k.type('a')
-            k.type(str(indigive_total.replace(' ', '')))
-            k.tap(Key.enter)
+            kb.write('0')
+            kb.send('ctrl+a')
+            kb.write(str(indigive_total))
+            kb.send('enter')
         elif fabric in {'cotton', 'viscose'}:
-            k.type('0')
-            with k.pressed(Key.ctrl):
-                k.type('a')
-            k.type(str(salt_total.replace(' ', '')))
-            k.tap(Key.enter)
+            kb.write('0')
+            kb.send('ctrl+a')
+            kb.write(str(salt_total))
+            kb.send('enter')
             sleep(0.05)
-            k.type('0')
-            with k.pressed(Key.ctrl):
-                k.type('a')
-            '''sleep(0.2)
-            with k.pressed(Key.ctrl):
-                k.type('a')'''
+            kb.write('0')
+            kb.send('ctrl+a')
+            sleep(0.2)
             if half:
-                k.type(str(int(soda_ash_total.replace(' ', '')) / 2))
+                kb.write(str(int(soda_ash_total) / 2))
                 # sleep(0.2)
             else:
-                k.type(str(soda_ash_total.replace(' ', '')))
+                kb.write(str(soda_ash_total))
                 # sleep(0.2)
-            k.tap(Key.enter)
+            kb.send('enter')
             sleep(0.05)
         if reactive is True:
-            k.tap(Key.enter)
+            kb.send('enter')
         return
 
 
 def calculate_dyes(fabric, key, half):
-    k = Controller()
-    k.release(key)
-    k.release(Key.ctrl)
-    k.release(Key.shift)
-    k.release(Key.alt)
     if test_mode is True:
-        key_split = str(key).split('.')[1]
-        print(key_split.upper() + ' --> Calculating ' + fabric + ' values')
-    sleep(0.25)
-    previous = pyperclip.paste()
+        print(key.upper() + ' --> Calculating ' + fabric + ' values')
+    # sleep(0.25)
+    previous = ppc.paste()
     sleep(0.25)
     navigate_dosorama(fabric, half)
     if test_mode is True:
         print()
-    pyperclip.copy(previous)
+    ppc.copy(previous)
     return
 
 
-def calculate_co():
-    calculate_dyes('cotton', Key.f1, False)
-    return
+kb.add_hotkey('f1', calculate_dyes, args=('cotton', 'f1', False))
+kb.add_hotkey('f2', calculate_dyes, args=('viscose', 'f2', False))
+kb.add_hotkey('f3', calculate_dyes, args=('cotton', 'f3', True))
+kb.add_hotkey('f4', calculate_dyes, args=('viscose', 'f4', True))
+kb.add_hotkey('f5', calculate_dyes, args=('acid', 'f5', False))
 
 
-def calculate_cv():
-    calculate_dyes('viscose', Key.f2, False)
-    return
-
-
-def calculate_half_co():
-    calculate_dyes('cotton', Key.f3, True)
-    return
-
-
-def calculate_half_cv():
-    calculate_dyes('viscose', Key.f4, True)
-    return
-
-
-def calculate_ac():
-    calculate_dyes('acid', Key.f5, False)
-    return
-
-
-with keyboard.GlobalHotKeys({
-     '<f1>': calculate_co,
-     '<f2>': calculate_cv,
-     '<f3>': calculate_half_co,
-     '<f4>': calculate_half_cv,
-     '<f5>': calculate_ac}) as listener:
-    listener.join()
+kb.wait()
