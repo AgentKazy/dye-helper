@@ -7,7 +7,7 @@ from time import sleep
 
 os.system('cls')
 
-test_mode = True
+test_mode = False
 
 # ----------------- Do not edit below this line ----------------- #
 
@@ -101,16 +101,19 @@ def copy_dye_values():
         while True:
             read_value = 'break_loop'
             while read_value == 'break_loop':
-                print("Before copying: " + read_value)
+                if test_mode is True:
+                    print("Before copying: " + read_value)
                 kb.send('ctrl+c')
                 sleep(0.05)
                 read_value = str(
                     ppc.paste().replace(' ', '')).replace(',', '.')
-                print("After copying: " + read_value)
+                if test_mode is True:
+                    print("After copying: " + read_value)
             # sleep(0.2)
             if '.' not in read_value:
                 break
-            print('Read value :' + read_value)
+            if test_mode is True:
+                print('Read value :' + read_value)
             dye_values.append(float(read_value))
             ppc.copy('NONE')
             if test_mode is True:
@@ -132,7 +135,8 @@ def copy_dye_values():
             pass
         else:
             indifix_value = float(dye_values[-1])
-            print(dye_values[-1])
+            if test_mode is True:
+                print(dye_values[-1])
             if test_mode is True:
                 print('Formula contains Indifix PA: '
                       + str((dye_values[-1])) + ' g/L')
@@ -165,13 +169,16 @@ def navigate_dosorama(fabric, half):
             biotouch = 'break_loop'
             ppc.copy('break_loop')
             while biotouch == 'break_loop':
-                print('before = ' + str(biotouch))
+                if test_mode is True:
+                    print('before = ' + str(biotouch))
                 kb.send('ctrl+c')
                 sleep(0.05)
                 biotouch = ppc.paste()
-                print('after = ' + str(biotouch))
+                if test_mode is True:
+                    print('after = ' + str(biotouch))
             # sleep(0.2)
-            print('Biotouch value is: ' + str(biotouch))
+            if test_mode is True:
+                print('Biotouch value is: ' + str(biotouch))
             if not biotouch.startswith('221'):
                 if test_mode is True:
                     print('No bio-touch.')
