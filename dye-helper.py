@@ -207,19 +207,19 @@ def navigate_dosorama(fabric, half):
         kb.send('ctrl+home, right, right, right, down, down')
         # Enter salt and soda ash/acid donor totals
         if fabric == 'acid':
-            kb.write('0')
-            kb.send('ctrl+a')
+            # kb.write('0')
+            # kb.send('ctrl+a')
             kb.write(str(indigive_total))
             kb.send('enter')
         elif fabric in {'cotton', 'viscose'}:
-            kb.write('0')
-            kb.send('ctrl+a')
+            # kb.write('0')
+            # kb.send('ctrl+a')
             kb.write(str(salt_total))
             kb.send('enter')
             sleep(0.05)
-            kb.write('0')
-            kb.send('ctrl+a')
-            sleep(0.2)
+            # kb.write('0')
+            # kb.send('ctrl+a')
+            # sleep(0.2)
             if half:
                 kb.write(str(int(soda_ash_total) / 2))
                 # sleep(0.2)
